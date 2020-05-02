@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>   
+    <!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://getahead.org/dwr/dwr20.dtd">
+<dwr>
+	<allow>
+	        <!-- 测试Dwr配置,与本项目无关 -->
+			<create creator="new" javascript="TestDwr">
+				<param name="class" value="com.zzz.test.dwr.TestDwr" />
+			</create>
+			<convert converter="bean" match="com.zzz.test.dwr.Person">
+				<param name="include" value="id,name,age" />
+			</convert>
+			<!-- 本项目数据字典分类DAO配置 -->
+		<create creator="spring" javascript="JSjzdflDAO">
+			<param name="beanName" value="sjzdflDAOProxy" />
+		</create>
+		<convert converter="bean" match="com.zzz.hibernate.util.Sjzdfl">
+			<param name="include" value="sjzdflmc,sjzdflId,enable" />
+		</convert>
+		   <!--本项目联系人添加模块配置  -->
+		<create creator="spring" javascript="AddContactPersonInfoAjax">
+			<param name="beanName" value="saveContactPersonInfoAjax" />
+		</create>
+		   <!--本项目联系人查看模块配置 -->
+		<create creator="spring" javascript="ContactPersonInfoDetailAjax">
+			<param name="beanName" value="contactPersonInfoDetailAjax" />
+		</create>
+		  <!--本项目角色添加模块配置  -->
+		<create creator="spring" javascript="AddRoleInfoAjax">
+			<param name="beanName" value="addRoleInfoAjax" />
+		</create>
+	</allow>
+</dwr>  

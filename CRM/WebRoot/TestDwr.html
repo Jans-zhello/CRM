@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TestDwr.html</title>
+   <script type="text/javascript" src="dwr/engine.js"></script>
+   <script type="text/javascript" src="dwr/interface/TestDwr.js"></script>
+   <script type="text/javascript">
+     function init(){
+       TestDwr.getPersons(callback);
+     }
+     function callback(data){
+       for(i=0;i<data.length;i++){
+         alert(data[i].id+","+data[i].name+","+data[i].age);
+       }
+     }   
+   
+   
+   </script>
+  </head>
+  
+  <body onload="init();">
+  </body>
+</html>

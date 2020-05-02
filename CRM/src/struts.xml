@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+<struts>
+	<constant name="struts.i18n.encoding" value="UTF-8" />
+	<package name="struts2" extends="struts-default" namespace="/">
+		<action name="showSjzdfl" class="sjzdflAction"> <!-- class="是spring里定义Action" 的id-->
+			<result name="success">/jsp/show_sjzdfl.jsp</result>
+		</action>
+		<action name="updateSjzdfl" class="updateSjzdflAction"> 
+			<result name="success" type="chain">showSjzdfl</result>
+		</action>
+		<action name="showSjzdxx" class="sjzdxxAction"> 
+			<result name="success">/jsp/show_sjzdxx.jsp</result>
+		</action>
+		<action name="updateSjzdxx" class="updatesjzdxxAction"> 
+			<result name="success" type="chain">showSjzdxx</result>
+		</action>
+		<action name="showCustomerlevel" class="showCustomerlevelAction">
+			<result name="success" >/jsp/show_customerlevel.jsp</result>
+		</action>
+		<action name="updateCustomerlevel" class="updateCustomerlevelAction"> 
+			<result name="success" type="chain" >showCustomerlevel</result>
+		</action>
+		<action name="customerInfo" class="customerInfoAction"> 
+			<result name="success" >/jsp/show_customerinfo.jsp</result>
+		</action>
+		<action name="updateCustomerInfo" class="updateCustomerInfoAction"> 
+			<result name="success" type="chain">customerInfo</result>
+		</action>
+		<action name="anglecustomerInfo" class="anglecustomerInfoAction"> 
+			<result name="success" >/jsp/show_customerinfo_angle.jsp</result>
+		</action>
+		<action name="customerInfoDetail" class="customerInfoDetailAction"> 
+			<result name="success" >/jsp/show_customerinfodetail.jsp</result>
+		</action>
+		<action name="customerInfoQuery" class="customerInfoQueryAction"> 
+			<result name="success" >/jsp/show_customerinfo_angle.jsp</result>
+		</action>
+		<action name="contactPersonInfo" class="contactPersonInfoAction"> 
+			<result name="success" >/jsp/show_contactpersoninfo.jsp</result>
+		</action>
+		<action name="saveContactPersonInfo" class="saveContactPersonInfoAction"> 
+			<result name="success" type="chain">contactPersonInfo</result>
+		</action>
+		<action name="contactPersonInfoQuery" class="contactPersonInfoQueryAction"> 
+			<result name="success" >/jsp/show_contactpersoninfo.jsp</result>
+		</action>
+		<action name="contactPersonInfoDetail" class="contactPersonInfoDetailAction"> 
+			<result name="success" >/jsp/show_contactpersoninfo_detail.jsp</result>
+		</action>
+		<action name="showMenuInfo" class="showMenuInfoAction"> 
+			<result name="success" >/jsp/addRoleInfo.jsp</result>
+		</action>
+		<action name="showRoleInfo" class="showRoleInfoAction"> 
+			<result name="success" >/jsp/show_RoleInfo.jsp</result>
+		</action>
+	</package>
+</struts>

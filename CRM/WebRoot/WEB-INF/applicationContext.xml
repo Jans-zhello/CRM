@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+	<!-- 定义数据源 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver">
+		</property>
+		<property name="url" value="jdbc:mysql://localhost:3306/crm">
+		</property>
+		<property name="username" value="root"></property>
+		<property name="password" value="648042475"></property>
+	</bean>
+	<!-- 定义sessionFactory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+				</prop>
+				<prop key="hibernate.show_sql"> false</prop>
+				<prop key="hibernate.format_sql">false</prop>
+			</props>
+		</property>
+		<property name="mappingResources">
+			<list>
+				<value>com/zzz/hibernate/util/Sjzdfl.hbm.xml</value>
+				<value>com/zzz/hibernate/util/Sjzdxx.hbm.xml</value>
+				<value>com/zzz/hibernate/util/Customerlevel.hbm.xml</value>
+				<value>com/zzz/hibernate/util/Customerinfo.hbm.xml</value>
+				<value>com/zzz/hibernate/util/Contactpersoninfo.hbm.xml</value>
+				<value>com/zzz/hibernate/util/Menuinfo.hbm.xml</value>
+				<value>com/zzz/hibernate/util/Roleinfo.hbm.xml</value>
+				<value>com/zzz/hibernate/util/Rolerelationship.hbm.xml</value>
+				<value>com/zzz/hibernate/util/Userinfo.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 定义hibernateTemplate -->
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<!-- 定义事务管理 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<!--数据字典分类相关注入 -->
+	<!-- 定义sjzdflDAO -->
+	<bean id="sjzdflDAO" class="com.zzz.hibernate.util.SjzdflDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<!-- 定义sjzdflDAOProxy即【添加了事务处理的DAO对象】 -->
+	<bean id="sjzdflDAOProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">     <!-- 代理的管理器 -->
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">                 <!-- 代理的目标 -->
+			<ref bean="sjzdflDAO" />
+		</property>
+
+		<property name="transactionAttributes"> <!-- 代理的属性 -->
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED, -Exception</prop><!-- 这里的方法签名可以精确到方法全配置上 -->
+			</props>
+		</property>
+	</bean>
+	<!-- 定义sjzdflService -->
+	<bean id="sjzdflService" class="com.zzz.struts2.service.SjzdflServiceImpl">
+		<property name="sjzdflDAO">
+			<ref bean="sjzdflDAOProxy" />
+		</property>
+	</bean>
+	<!-- 定义sjzdflAction -->
+	<bean id="sjzdflAction" class="com.zzz.struts2.action.SjzdflAction"
+		scope="prototype">
+		<property name="sjzdflService">
+			<ref bean="sjzdflService" />
+		</property>
+	</bean>
+	<!-- 定义updateSjzdflAction -->
+	<bean id="updateSjzdflAction" class="com.zzz.struts2.action.UpdateSjzdflAction"
+		scope="prototype">
+		<property name="sjzdflService">
+			<ref bean="sjzdflService" />
+		</property>
+	</bean>
+	<!-- 定义sjzdxxDAO -->
+	<bean id="sjzdxxDAO" class="com.zzz.hibernate.util.SjzdxxDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<!-- 定义sjzdflDAOProxy即【添加了事务处理的DAO对象】 -->
+	<bean id="sjzdxxDAOProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">     <!-- 代理的管理器 -->
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">                 <!-- 代理的目标 -->
+			<ref bean="sjzdxxDAO" />
+		</property>
+
+		<property name="transactionAttributes"> <!-- 代理的属性 -->
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED, -Exception</prop><!-- 这里的方法签名可以精确到方法全配置上 -->
+			</props>
+		</property>
+	</bean>
+	<!-- 定义sjzdxxService -->
+	<bean id="sjzdxxService" class="com.zzz.struts2.service.SjzdxxServiceImpl">
+		<property name="sjzdxxDAO">
+			<ref bean="sjzdxxDAOProxy" />
+		</property>
+	</bean>
+	<!-- 定义sjzdxxAction -->
+	<bean id="sjzdxxAction" class="com.zzz.struts2.action.SjzdxxAction"
+		scope="prototype">
+		<property name="sjzdflService">
+			<ref bean="sjzdflService" />
+		</property>
+		<property name="sjzdxxService">
+			<ref bean="sjzdxxService" />
+		</property>
+	</bean>
+	<!-- 定义updatesjzdxxAction -->
+	<bean id="updatesjzdxxAction" class="com.zzz.struts2.action.UpdatesjzdxxAction"
+		scope="prototype">
+		<property name="sjzdflService">
+			<ref bean="sjzdflService" />
+		</property>
+		<property name="sjzdxxService">
+			<ref bean="sjzdxxService" />
+		</property>
+	</bean>
+	<!-- 定义customerlevelDAO -->
+	<bean id="customerlevelDAO" class="com.zzz.hibernate.util.CustomerlevelDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<!-- 定义customerlevelDAOProxy即【添加了事务处理的DAO对象】 -->
+	<bean id="customerlevelDAOProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">     <!-- 代理的管理器 -->
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">                 <!-- 代理的目标 -->
+			<ref bean="customerlevelDAO" />
+		</property>
+
+		<property name="transactionAttributes"> <!-- 代理的属性 -->
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED, -Exception</prop><!-- 这里的方法签名可以精确到方法全配置上 -->
+			</props>
+		</property>
+	</bean>
+	<!-- 定义customerlevelService -->
+	<bean id="customerlevelService" class="com.zzz.struts2.service.CustomerlevelServiceImpl">
+		<property name="customerlevelDAO">
+			<ref bean="customerlevelDAOProxy" />
+		</property>
+	</bean>
+	<!--定义showCustomerlevelAction -->
+	<bean id="showCustomerlevelAction" class="com.zzz.struts2.action.CustomerlevelAction"
+		scope="prototype">
+		<property name="customerlevelService">
+			<ref bean="customerlevelService" />
+		</property>
+	</bean>
+	<!--定义updateCustomerlevelAction -->
+	<bean id="updateCustomerlevelAction" class="com.zzz.struts2.action.UpdateCustomerlevelAction"
+		scope="prototype">
+		<property name="customerlevelService">
+			<ref bean="customerlevelService" />
+		</property>
+	</bean>
+	<!--客户信息相关注入 -->
+	<!--定义customerinfoDAO -->
+	<bean id="customerinfoDAO" class="com.zzz.hibernate.util.CustomerinfoDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<!-- 定义customerinfoDAOProxy即【添加了事务处理的DAO对象】 -->
+	<bean id="customerinfoDAOProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">     <!-- 代理的管理器 -->
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">                 <!-- 代理的目标 -->
+			<ref bean="customerinfoDAO" />
+		</property>
+
+		<property name="transactionAttributes"> <!-- 代理的属性 -->
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED, -Exception</prop><!-- 这里的方法签名可以精确到方法全配置上 -->
+			</props>
+		</property>
+	</bean>
+	<!-- 定义customerinfoService -->
+	<bean id="customerinfoService" class="com.zzz.struts2.service.CustomerinfoServiceImpl">
+		<property name="customerlevelDAO">
+			<ref bean="customerlevelDAOProxy" />
+		</property>
+		<property name="customerinfoDAO">
+			<ref bean="customerinfoDAOProxy" />
+		</property>
+		<property name="sjzdxxDAO">
+			<ref bean="sjzdxxDAOProxy" />
+		</property>
+		<property name="sjzdflDAO">
+			<ref bean="sjzdflDAOProxy" />
+		</property>
+	</bean>
+	<!--定义customerInfoAction -->
+	<bean id="customerInfoAction" class="com.zzz.struts2.action.CustomerInfoAction">
+		<property name="customerinfoService">
+			<ref bean="customerinfoService" />
+		</property>
+	</bean>
+	<!--定义updateCustomerInfoAction -->
+	<bean id="updateCustomerInfoAction" class="com.zzz.struts2.action.UpdateCustomerInfoAction">
+		<property name="customerinfoService">
+			<ref bean="customerinfoService" />
+		</property>
+	</bean>
+	<!--定义anglecustomerInfoAction -->
+	<bean id="anglecustomerInfoAction" class="com.zzz.struts2.action.AngleCustomerInfoAction">
+		<property name="customerinfoService">
+			<ref bean="customerinfoService" />
+		</property>
+	</bean>
+	<!--定义customerInfoDetailAction -->
+	<bean id="customerInfoDetailAction" class="com.zzz.struts2.action.CustomerInfoDetailAction">
+		<property name="customerinfoService">
+			<ref bean="customerinfoService" />
+		</property>
+	</bean>
+	<!--定义customerInfoQueryAction -->
+	<bean id="customerInfoQueryAction" class="com.zzz.struts2.action.CustomerInfoQueryAction">
+		<property name="customerinfoService">
+			<ref bean="customerinfoService" />
+		</property>
+	</bean>
+	<!--联系人模块相关注入 -->
+	<!--定义contactpersoninfoDAO -->
+	<bean id="contactpersoninfoDAO" class="com.zzz.hibernate.util.ContactpersoninfoDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<!--定义contactpersoninfoDAOProxy -->
+	<bean id="contactpersoninfoDAOProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">     <!-- 代理的管理器 -->
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">                 <!-- 代理的目标 -->
+			<ref bean="contactpersoninfoDAO" />
+		</property>
+
+		<property name="transactionAttributes"> <!-- 代理的属性 -->
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED, -Exception</prop><!-- 这里的方法签名可以精确到方法全配置上 -->
+			</props>
+		</property>
+	</bean>
+	<!--定义contactpersoninfoService -->
+	<bean id="contactpersoninfoService" class="com.zzz.struts2.service.ContactpersoninfoServiceImpl">
+		<property name="contactpersoninfoDAO">
+			<ref bean="contactpersoninfoDAOProxy" />
+		</property>
+	</bean>
+	<!--定义saveContactPersonInfoAction -->
+	<bean id="saveContactPersonInfoAction" class="com.zzz.struts2.action.SaveContactPersonInfoAction">
+		<property name="contactpersoninfoService">
+			<ref bean="contactpersoninfoService" />
+		</property>
+	</bean>
+	<!--定义saveContactPersonInfoAjax -->
+	<bean id="saveContactPersonInfoAjax" class="com.zzz.test.dwr.SaveContactPersonInfoAjax">
+		<property name="contactpersoninfoService">
+			<ref bean="contactpersoninfoService" />
+		</property>
+	</bean>
+	<!--定义contactPersonInfoAction -->
+	<bean id="contactPersonInfoAction" class="com.zzz.struts2.action.ContactPersonInfoAction">
+		<property name="contactpersoninfoService">
+			<ref bean="contactpersoninfoService" />
+		</property>
+	</bean>
+	<!-- 定义contactPersonInfoQueryAction -->
+	<bean id="contactPersonInfoQueryAction" class="com.zzz.struts2.action.ContactPersonInfoQuery">
+		<property name="contactpersoninfoService">
+			<ref bean="contactpersoninfoService" />
+		</property>
+	</bean>
+	<!--定义contactPersonInfoDetailAction -->
+	<bean id="contactPersonInfoDetailAction" class="com.zzz.struts2.action.ContactPersonInfoDetailAction">
+		<property name="contactpersoninfoService">
+			<ref bean="contactpersoninfoService" />
+		</property>
+	</bean>
+	<!--角色模块和菜单信息模块相关配置 -->
+	<!--定义roleinfoDAO -->
+	<bean id="roleinfoDAO" class="com.zzz.hibernate.util.RoleinfoDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<!--定义roleinfoDAOProxy -->
+	<bean id="roleinfoDAOProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">     <!-- 代理的管理器 -->
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">                 <!-- 代理的目标 -->
+			<ref bean="roleinfoDAO" />
+		</property>
+
+		<property name="transactionAttributes"> <!-- 代理的属性 -->
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED, -Exception</prop><!-- 这里的方法签名可以精确到方法全配置上 -->
+			</props>
+		</property>
+	</bean>
+
+	<!--定义menuinfoDAO -->
+	<bean id="menuinfoDAO" class="com.zzz.hibernate.util.MenuinfoDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<!--定义menuinfoDAOProxy -->
+	<bean id="menuinfoDAOProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">     <!-- 代理的管理器 -->
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">                 <!-- 代理的目标 -->
+			<ref bean="menuinfoDAO" />
+		</property>
+
+		<property name="transactionAttributes"> <!-- 代理的属性 -->
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED, -Exception</prop><!-- 这里的方法签名可以精确到方法全配置上 -->
+			</props>
+		</property>
+	</bean>
+	<!--定义rolerelationshipDAO -->
+	<bean id="rolerelationshipDAO" class="com.zzz.hibernate.util.RolerelationshipDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<!--定义rolerelationshipDAOProxy -->
+	<bean id="rolerelationshipDAOProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">     <!-- 代理的管理器 -->
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">                 <!-- 代理的目标 -->
+			<ref bean="rolerelationshipDAO" />
+		</property>
+
+		<property name="transactionAttributes"> <!-- 代理的属性 -->
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED, -Exception</prop><!-- 这里的方法签名可以精确到方法全配置上 -->
+			</props>
+		</property>
+	</bean>
+	<!--定义menuinfoService -->
+	<bean id="menuinfoService" class="com.zzz.struts2.service.MenuInfoServiceImpl">
+		<property name="menuinfoDAO">
+			<ref bean="menuinfoDAOProxy" />
+		</property>
+	</bean>
+	<!--定义roleinfoService -->
+	<bean id="roleinfoService" class="com.zzz.struts2.service.RoleInfoServiceImpl">
+		<property name="roleinfoDAO">
+			<ref bean="roleinfoDAOProxy" />
+		</property>
+	</bean>
+	<!--定义rolerelationshipService -->
+	<bean id="rolerelationshipService" class="com.zzz.struts2.service.RoleRelationShipServiceImpl">
+		<property name="rolerelationshipDAO">
+			<ref bean="rolerelationshipDAOProxy" />
+		</property>
+	</bean>
+	<!--定义showMenuInfoAction -->
+	<bean id="showMenuInfoAction" class="com.zzz.struts2.action.ShowMenuInfoAction">
+		<property name="menuInfoService">
+			<ref bean="menuinfoService" />
+		</property>
+	</bean>
+	<!--定义addRoleInfoAjax -->
+	<bean id="addRoleInfoAjax" class="com.zzz.test.dwr.AddRoleInfoAjax">
+		<property name="roleInfoService">
+			<ref bean="roleinfoService" />
+		</property>
+		<property name="roleRelationShipService">
+			<ref bean="rolerelationshipService" />
+		</property>
+	</bean>
+	<!--定义showRoleInfoAction -->
+	<bean id="showRoleInfoAction" class="com.zzz.struts2.action.RoleInfoAction">
+		<property name="roleInfoService">
+			<ref bean="roleinfoService" />
+		</property>
+	</bean>
+</beans>
